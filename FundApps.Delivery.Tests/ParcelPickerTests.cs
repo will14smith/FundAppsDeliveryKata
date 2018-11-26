@@ -40,7 +40,7 @@ namespace FundApps.Delivery.Tests
         public void ShouldThrowExceptionIfNoParcelTypeWouldFit()
         {
             var input = new ParcelInput(10, 0, 0, 0);
-            var types = new[] { new ParcelSpecification("Small", 1, 1, 0) };
+            var types = new[] { new ParcelSpecification("Small", 1, 0, 1) };
 
             Assert.Throws<NoSuitableParcelTypeException>(() => new ParcelPicker(types).Pick(input));
         }
@@ -51,8 +51,8 @@ namespace FundApps.Delivery.Tests
             var input = new ParcelInput(5, 0, 0, 0);
             var types = new[]
             {
-                new ParcelSpecification("Small $2", 10, 2, 0),
-                new ParcelSpecification("Small $1", 10, 1, 0)
+                new ParcelSpecification("Small $2", 10, 0, 2),
+                new ParcelSpecification("Small $1", 10, 0, 1)
             };
 
             var parcelType = new ParcelPicker(types).Pick(input);
