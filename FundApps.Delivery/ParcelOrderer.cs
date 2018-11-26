@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FundApps.Delivery
 {
@@ -14,13 +15,21 @@ namespace FundApps.Delivery
 
         public ParcelOrder Order(IReadOnlyCollection<ParcelInput> inputs)
         {
-            throw new NotImplementedException();
+            var parcels = inputs.Select(x => _picker.Pick(x)).ToList();
+
+            return new ParcelOrder(parcels);
         }
     }
 
     public class ParcelOrder
     {
+        public ParcelOrder(IReadOnlyCollection<ParcelSpecification> parcels)
+        {
+            Parcels = parcels;
+        }
+
         public IReadOnlyCollection<ParcelSpecification> Parcels { get; }
-        public decimal TotalPrice { get; }
+
+        public decimal TotalPrice => Parcels.Sum(x => x.Price);
     }
 }

@@ -31,7 +31,7 @@ namespace FundApps.Delivery.Tests
 
             var result = new ParcelOrderer(new ParcelPicker(ParcelTestData.ParcelTypes)).Order(inputs);
 
-            Assert.Equal(inputs.Length, result.TotalPrice);
+            Assert.Equal(48, result.TotalPrice);
         }
     }
 }
