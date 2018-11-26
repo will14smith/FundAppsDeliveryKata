@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FundApps.Delivery
@@ -15,7 +16,24 @@ namespace FundApps.Delivery
 
         public ParcelSpecification Pick(ParcelPickerInput input)
         {
-            throw new NotImplementedException();
+            foreach (var parcelType in _parcelTypes)
+            {
+                if (WouldFitIn(input, parcelType))
+                {
+                    return parcelType;
+                }
+            }
+
+            throw new Exception("No parcel size");
+        }
+
+        private static bool WouldFitIn(ParcelPickerInput input, ParcelSpecification parcelType)
+        {
+            if (input.X >= parcelType.MaxDimension) return false;
+            if (input.Y >= parcelType.MaxDimension) return false;
+            if (input.Z >= parcelType.MaxDimension) return false;
+
+            return true;
         }
     }
 }
