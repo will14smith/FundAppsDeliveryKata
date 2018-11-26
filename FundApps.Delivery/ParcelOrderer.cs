@@ -23,8 +23,7 @@ namespace FundApps.Delivery
     public class ParcelOrder
     {
         private const int SpeedyMultiplier = 2;
-        private const int WeightSurcharge = 2;
-        
+
         private readonly bool _isSpeedy;
 
         public ParcelOrder(IReadOnlyCollection<(ParcelInput, ParcelSpecification)> parcels, bool isSpeedy)
@@ -33,21 +32,8 @@ namespace FundApps.Delivery
             Parcels = parcels;
         }
 
-        public IReadOnlyCollection<(ParcelInput, ParcelSpecification)> Parcels { get; }
+        public IReadOnlyCollection<(ParcelInput Input, ParcelSpecification Spec)> Parcels { get; }
 
-        public decimal TotalPrice => Parcels.Sum(x => CalculateParcelPrice(x.Item1, x.Item2)) * (_isSpeedy ? SpeedyMultiplier : 1);
-
-        private static decimal CalculateParcelPrice(ParcelInput input, ParcelSpecification spec)
-        {
-            var basePrice = spec.Price;
-
-            var weightSurcharge = 0;
-            if (input.Weight > spec.MaxWeight)
-            {
-                weightSurcharge = (input.Weight - spec.MaxWeight) * WeightSurcharge;
-            }
-
-            return basePrice + weightSurcharge;
-        }
+        public decimal TotalPrice => Parcels.Sum(x => x.Spec.CalculatePrice(x.Input)) * (_isSpeedy ? SpeedyMultiplier : 1);
     }
 }
