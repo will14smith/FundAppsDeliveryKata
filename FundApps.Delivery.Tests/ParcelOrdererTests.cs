@@ -5,9 +5,9 @@ namespace FundApps.Delivery.Tests
     public class ParcelOrdererTests
     {
         private static readonly ParcelInput[] Inputs = {
-            new ParcelInput(10, 10, 10),
-            new ParcelInput(50, 10, 10),
-            new ParcelInput(100, 10, 10),
+            new ParcelInput(10, 10, 10, 0),
+            new ParcelInput(50, 10, 10, 0),
+            new ParcelInput(100, 10, 10, 0),
         };
 
         [Fact]

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace FundApps.Delivery.Tests
 {
@@ -32,7 +29,7 @@ namespace FundApps.Delivery.Tests
         [InlineData(0, 0, 100, "Extra Large")]
         public void ShouldPickCorrectSizeParcel(int x, int y, int z, string expectedType)
         {
-            var input = new ParcelInput(x, y, z);
+            var input = new ParcelInput(x, y, z, 0);
 
             var parcelType = new ParcelPicker(ParcelTestData.ParcelTypes).Pick(input);
 
@@ -42,8 +39,8 @@ namespace FundApps.Delivery.Tests
         [Fact]
         public void ShouldThrowExceptionIfNoParcelTypeWouldFit()
         {
-            var input = new ParcelInput(10, 0, 0);
-            var types = new[] { new ParcelSpecification("Small", 1, 1) };
+            var input = new ParcelInput(10, 0, 0, 0);
+            var types = new[] { new ParcelSpecification("Small", 1, 1, 0) };
 
             Assert.Throws<NoSuitableParcelTypeException>(() => new ParcelPicker(types).Pick(input));
         }
@@ -51,11 +48,11 @@ namespace FundApps.Delivery.Tests
         [Fact]
         public void ParcelTypesShouldBeOrderedByPrice()
         {
-            var input = new ParcelInput(5, 0, 0);
+            var input = new ParcelInput(5, 0, 0, 0);
             var types = new[]
             {
-                new ParcelSpecification("Small $2", 10, 2),
-                new ParcelSpecification("Small $1", 10, 1)
+                new ParcelSpecification("Small $2", 10, 2, 0),
+                new ParcelSpecification("Small $1", 10, 1, 0)
             };
 
             var parcelType = new ParcelPicker(types).Pick(input);
