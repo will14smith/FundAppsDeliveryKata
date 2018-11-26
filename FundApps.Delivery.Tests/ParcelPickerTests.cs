@@ -7,9 +7,6 @@ namespace FundApps.Delivery.Tests
 {
     public class ParcelPickerTests
     {
-        private readonly ParcelPicker _picker = new ParcelPicker(ParcelTestData.ParcelTypes);
-
-
         [Theory]
 
         [InlineData(9, 0, 0, "Small")]
@@ -37,9 +34,33 @@ namespace FundApps.Delivery.Tests
         {
             var input = new ParcelPickerInput(x, y, z);
 
-            var parcelType = _picker.Pick(input);
+            var parcelType = new ParcelPicker(ParcelTestData.ParcelTypes).Pick(input);
 
             Assert.Equal(expectedType, parcelType.Name);
+        }
+
+        [Fact]
+        public void ShouldThrowExceptionIfNoParcelTypeWouldFit()
+        {
+            var input = new ParcelPickerInput(10, 0, 0);
+            var types = new[] { new ParcelSpecification("Small", 1, 1) };
+
+            Assert.Throws<NoSuitableParcelTypeException>(() => new ParcelPicker(types).Pick(input));
+        }
+
+        [Fact]
+        public void ParcelTypesShouldBeOrderedByPrice()
+        {
+            var input = new ParcelPickerInput(5, 0, 0);
+            var types = new[]
+            {
+                new ParcelSpecification("Small $2", 10, 2),
+                new ParcelSpecification("Small $1", 10, 1)
+            };
+
+            var parcelType = new ParcelPicker(types).Pick(input);
+
+            Assert.Equal("Small $1", parcelType.Name);
         }
     }
 }
