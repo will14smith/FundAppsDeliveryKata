@@ -31,7 +31,20 @@ namespace FundApps.Delivery.Tests
         {
             var result = new ParcelOrderer(new ParcelPicker(ParcelTestData.ParcelTypes)).Order(Inputs, true);
 
-            Assert.Equal(48*2, result.TotalPrice);
+            Assert.Equal(48 * 2, result.TotalPrice);
+        }
+
+        [Fact]
+        public void OverweightParcelsShouldHaveSurcharge()
+        {
+            var input = new[]
+            {
+                new ParcelInput(1, 1, 1, 10),
+            };
+
+            var result = new ParcelOrderer(new ParcelPicker(ParcelTestData.ParcelTypes)).Order(input);
+
+            Assert.Equal(21, result.TotalPrice);
         }
     }
 }

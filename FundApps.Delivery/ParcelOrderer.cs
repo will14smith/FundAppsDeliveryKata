@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace FundApps.Delivery
@@ -15,7 +14,7 @@ namespace FundApps.Delivery
 
         public ParcelOrder Order(IReadOnlyCollection<ParcelInput> inputs, bool isSpeedy = false)
         {
-            var parcels = inputs.Select(x => _picker.Pick(x)).ToList();
+            var parcels = inputs.Select(x => (x, _picker.Pick(x))).ToList();
 
             return new ParcelOrder(parcels, isSpeedy);
         }
@@ -23,16 +22,32 @@ namespace FundApps.Delivery
 
     public class ParcelOrder
     {
+        private const int SpeedyMultiplier = 2;
+        private const int WeightSurcharge = 2;
+        
         private readonly bool _isSpeedy;
 
-        public ParcelOrder(IReadOnlyCollection<ParcelSpecification> parcels, bool isSpeedy)
+        public ParcelOrder(IReadOnlyCollection<(ParcelInput, ParcelSpecification)> parcels, bool isSpeedy)
         {
             _isSpeedy = isSpeedy;
             Parcels = parcels;
         }
 
-        public IReadOnlyCollection<ParcelSpecification> Parcels { get; }
+        public IReadOnlyCollection<(ParcelInput, ParcelSpecification)> Parcels { get; }
 
-        public decimal TotalPrice => Parcels.Sum(x => x.Price) * (_isSpeedy ? 2 : 1);
+        public decimal TotalPrice => Parcels.Sum(x => CalculateParcelPrice(x.Item1, x.Item2)) * (_isSpeedy ? SpeedyMultiplier : 1);
+
+        private static decimal CalculateParcelPrice(ParcelInput input, ParcelSpecification spec)
+        {
+            var basePrice = spec.Price;
+
+            var weightSurcharge = 0;
+            if (input.Weight > spec.MaxWeight)
+            {
+                weightSurcharge = (input.Weight - spec.MaxWeight) * WeightSurcharge;
+            }
+
+            return basePrice + weightSurcharge;
+        }
     }
 }
