@@ -13,7 +13,7 @@ namespace FundApps.Delivery
             _parcelTypes = parcelTypes.OrderBy(x => x.Price).ToList();
         }
 
-        public ParcelSpecification Pick(ParcelPickerInput input)
+        public ParcelSpecification Pick(ParcelInput input)
         {
             foreach (var parcelType in _parcelTypes)
             {
@@ -26,7 +26,7 @@ namespace FundApps.Delivery
             throw new NoSuitableParcelTypeException();
         }
 
-        private static bool WouldFitIn(ParcelPickerInput input, ParcelSpecification parcelType)
+        private static bool WouldFitIn(ParcelInput input, ParcelSpecification parcelType)
         {
             if (input.X >= parcelType.MaxDimension) return false;
             if (input.Y >= parcelType.MaxDimension) return false;

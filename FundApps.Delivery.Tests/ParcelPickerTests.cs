@@ -32,7 +32,7 @@ namespace FundApps.Delivery.Tests
         [InlineData(0, 0, 100, "Extra Large")]
         public void ShouldPickCorrectSizeParcel(int x, int y, int z, string expectedType)
         {
-            var input = new ParcelPickerInput(x, y, z);
+            var input = new ParcelInput(x, y, z);
 
             var parcelType = new ParcelPicker(ParcelTestData.ParcelTypes).Pick(input);
 
@@ -42,7 +42,7 @@ namespace FundApps.Delivery.Tests
         [Fact]
         public void ShouldThrowExceptionIfNoParcelTypeWouldFit()
         {
-            var input = new ParcelPickerInput(10, 0, 0);
+            var input = new ParcelInput(10, 0, 0);
             var types = new[] { new ParcelSpecification("Small", 1, 1) };
 
             Assert.Throws<NoSuitableParcelTypeException>(() => new ParcelPicker(types).Pick(input));
@@ -51,7 +51,7 @@ namespace FundApps.Delivery.Tests
         [Fact]
         public void ParcelTypesShouldBeOrderedByPrice()
         {
-            var input = new ParcelPickerInput(5, 0, 0);
+            var input = new ParcelInput(5, 0, 0);
             var types = new[]
             {
                 new ParcelSpecification("Small $2", 10, 2),

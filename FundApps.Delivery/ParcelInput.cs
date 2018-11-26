@@ -1,8 +1,8 @@
 ﻿namespace FundApps.Delivery
 {
-    public class ParcelPickerInput
+    public class ParcelInput
     {
-        public ParcelPickerInput(int x, int y, int z)
+        public ParcelInput(int x, int y, int z)
         {
             X = x;
             Y = y;
