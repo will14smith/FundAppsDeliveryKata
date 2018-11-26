@@ -8,9 +8,9 @@ namespace FundApps.Delivery
     {
         private readonly IReadOnlyCollection<ParcelSpecification> _parcelTypes;
 
-        public ParcelPicker(IReadOnlyCollection<ParcelSpecification> parcelTypes)
+        public ParcelPicker(IEnumerable<ParcelSpecification> parcelTypes)
         {
-            _parcelTypes = parcelTypes;
+            _parcelTypes = parcelTypes.OrderBy(x => x.Price).ToList();
         }
 
         public ParcelSpecification Pick(ParcelPickerInput input)
