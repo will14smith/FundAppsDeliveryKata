@@ -6,10 +6,13 @@ namespace FundApps.Delivery
     public class ParcelOrderer
     {
         private readonly ParcelPicker _picker;
+        private readonly ParcelDiscounter _parcelDiscounter;
 
-        public ParcelOrderer(ParcelPicker picker)
+        public ParcelOrderer(ParcelPicker picker) : this(picker, new ParcelDiscounter(new ParcelDiscount[0])) { }
+        public ParcelOrderer(ParcelPicker picker, ParcelDiscounter parcelDiscounter)
         {
             _picker = picker;
+            _parcelDiscounter = parcelDiscounter;
         }
 
         public ParcelOrder Order(IReadOnlyCollection<ParcelInput> inputs, bool isSpeedy = false)
@@ -17,6 +20,7 @@ namespace FundApps.Delivery
             var parcels = inputs.Select(x => (x, _picker.Pick(x))).ToList();
 
             var otherItems = new List<ParcelOrderOther>();
+            otherItems.AddRange(_parcelDiscounter.Calculate(parcels));
 
             if (isSpeedy)
             {
