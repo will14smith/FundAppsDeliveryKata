@@ -16,24 +16,42 @@ namespace FundApps.Delivery
         {
             var parcels = inputs.Select(x => (x, _picker.Pick(x))).ToList();
 
-            return new ParcelOrder(parcels, isSpeedy);
+            var otherItems = new List<ParcelOrderOther>();
+
+            if (isSpeedy)
+            {
+                // TODO don't like this duplication of the TotalPrice calculation
+                var total = parcels.Sum(x => x.Item2.CalculatePrice(x.Item1)) + otherItems.Sum(x => x.Price);
+                otherItems.Add(new ParcelOrderOther("Speedy delivery", total));
+            }
+
+            return new ParcelOrder(parcels, otherItems);
         }
     }
 
     public class ParcelOrder
     {
-        private const int SpeedyMultiplier = 2;
-
-        private readonly bool _isSpeedy;
-
-        public ParcelOrder(IReadOnlyCollection<(ParcelInput, ParcelSpecification)> parcels, bool isSpeedy)
+        public ParcelOrder(IReadOnlyCollection<(ParcelInput, ParcelSpecification)> parcels, IReadOnlyCollection<ParcelOrderOther> otherItems)
         {
-            _isSpeedy = isSpeedy;
             Parcels = parcels;
+            OtherItems = otherItems;
         }
 
         public IReadOnlyCollection<(ParcelInput Input, ParcelSpecification Spec)> Parcels { get; }
+        public IReadOnlyCollection<ParcelOrderOther> OtherItems { get; }
 
-        public decimal TotalPrice => Parcels.Sum(x => x.Spec.CalculatePrice(x.Input)) * (_isSpeedy ? SpeedyMultiplier : 1);
+        public decimal TotalPrice => Parcels.Sum(x => x.Spec.CalculatePrice(x.Input)) + OtherItems.Sum(x => x.Price);
+    }
+
+    public class ParcelOrderOther
+    {
+        public ParcelOrderOther(string name, decimal price)
+        {
+            Name = name;
+            Price = price;
+        }
+
+        public string Name { get; }
+        public decimal Price { get; }
     }
 }
